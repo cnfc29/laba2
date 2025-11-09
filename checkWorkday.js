@@ -1,3 +1,15 @@
+/**
+ * Проверяет, является ли сегодня рабочим днем или выходным
+ * @function
+ * @returns {boolean} true - если рабочий день, false - если выходной
+ * @example
+ * // Возвращает true в понедельник-пятницу
+ * checkWorkday(); // true
+ *
+ * // Возвращает false в субботу и воскресенье
+ * checkWorkday(); // false
+ */
+
 function checkWorkday() {
   const today = new Date();
   const dayOfWeek = today.getDay();
@@ -11,6 +23,6 @@ function checkWorkday() {
   }
 }
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = checkWorkday;
 }
