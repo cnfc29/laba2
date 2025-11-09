@@ -60,75 +60,25 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
-  # JOB ДЛЯ ДОКУМЕНТАЦИИ - ПОСЛЕ ВСЕГО
   documentation:
-    name: Generate Documentation
+    name: Auto-commit Documentation
     runs-on: ubuntu-latest
-    # ЗАВИСИМОСТЬ ОТ ВСЕХ ПРЕДЫДУЩИХ JOBS
     needs: [unit-tests, analyze]
     
     steps:
-    - name: Checkout repository
+    - name: Checkout repo
       uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        token: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Install dependencies
-      run: npm install
-      
-    - name: Generate JSDoc documentation
-      run: npm run docs
-      
-    - name: Create simple README
+    - name: Generate docs
       run: |
-        cat > README.md << 'EOF'
-        # Workday Checker Project
+        npx jsdoc checkWorkday.js -d docs
         
-        ## Описание
-        Проект с функцией для проверки рабочих и выходных дней.
-        
-        ## Функция checkWorkday()
-        ```javascript
-        // Возвращает true для рабочих дней, false для выходных
-        const result = checkWorkday();
-        ```
-        
-        ## Документация
-        - Полная документация: [docs/index.html](docs/index.html)
-        - Автогенерируется при каждом коммите
-        
-        ## Тестирование
-        ```bash
-        npm test          # Запуск тестов
-        npm run test:watch # Тесты в watch mode
-        ```
-        
-        ## Документация
-        ```bash
-        npm run docs        # Генерация документации
-        npm run docs:serve  # Просмотр документации
-        ```
-        
-        ## CI Status
-        ![CI](https://github.com/${{ github.repository }}/actions/workflows/${{ github.workflow }}.yml/badge.svg)
-        
-        *Документация обновлена: $(date)*
-        EOF
-      
-    - name: Upload documentation artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: documentation
-        path: |
-          README.md
-          docs/
-        retention-days: 30
-      
-    - name: Display completion message
+    - name: Commit docs
       run: |
-        echo "🎉 All jobs completed successfully!"
-        echo "📚 Documentation generated in 'docs/' folder"
-        echo "📄 README.md updated"
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add docs/
+        git commit -m "📚 docs: update generated documentation" || exit 0
+        git push
