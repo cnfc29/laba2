@@ -21,6 +21,7 @@ function checkWorkday() {
     console.log("💼 Сегодня РАБОЧИЙ день.");
     return true;
   }
+  
 }
 
 if (typeof module !== "undefined" && module.exports) {
