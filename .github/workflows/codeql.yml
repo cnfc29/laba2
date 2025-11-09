@@ -38,7 +38,7 @@ jobs:
       actions: read
       contents: read
     
-    # ДОБАВЛЯЕМ ЗАВИСИМОСТЬ ОТ ТЕСТОВ
+    # Зависимость от тестов
     needs: unit-tests
 
     strategy:
@@ -60,3 +60,45 @@ jobs:
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
+
+  # НОВЫЙ JOB ДЛЯ ДОКУМЕНТАЦИИ - ЗАПУСКАЕТСЯ ПОСЛЕ ВСЕГО
+  documentation:
+    name: Generate Documentation
+    runs-on: ubuntu-latest
+    # ЗАВИСИМОСТЬ ОТ ВСЕХ ПРЕДЫДУЩИХ JOBS
+    needs: [unit-tests, analyze]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Generate documentation
+      run: |
+        node generate-docs.js
+        npm run docs
+      
+    - name: Upload documentation
+      uses: actions/upload-artifact@v4
+      with:
+        name: documentation
+        path: |
+          DOCUMENTATION.md
+          README.md
+          docs/
+        retention-days: 30
+      
+    - name: Display documentation info
+      run: |
+        echo "📚 Documentation generated successfully!"
+        echo "📄 Files created:"
+        echo "  - DOCUMENTATION.md"
+        echo "  - README.md" 
+        echo "  - docs/ (JSDoc)"
