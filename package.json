@@ -1,0 +1,16 @@
+{
+  "name": "laba2",
+  "version": "1.0.0",
+  "main": "checkWorkday.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}

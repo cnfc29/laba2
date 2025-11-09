@@ -7,8 +7,18 @@
   </head>
   <body>
     Hello, World!
+    <script src="checkWorkday.js"></script>
     <script>
       alert("Hello, World!");
+      const result = checkWorkday();
+
+      if (!result) {
+        document.body.appendChild(document.createElement("p")).textContent =
+          "🎉 Сегодня ВЫХОДНОЙ!";
+      } else {
+        document.body.appendChild(document.createElement("p")).textContent =
+          "💼 Сегодня РАБОЧИЙ день.";
+      }
     </script>
   </body>
 </html>
